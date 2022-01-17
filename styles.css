@@ -1,4 +1,19 @@
-/* Sets all the text color to red! */
-body {
-    color: red;
+.path-title-plugin-has-path .view-header-title::before,
+.path-title-plugin-has-path .view-header-title::after {
+	font-size: var(--path-title-plugin-font-size);
+	vertical-align: middle;
+	opacity: 75%;
+	padding: 2px;
+	margin-right: 0.5em;
+	border: var(--path-title-plugin-border-size) solid
+		var(--background-modifier-border);
+	border-radius: 5px;
+}
+
+.path-title-plugin-has-path .view-header-title::before {
+	content: var(--path-title-plugin-title-before);
+}
+
+.path-title-plugin-has-path .view-header-title::after {
+	content: var(--path-title-plugin-title-after);
 }
