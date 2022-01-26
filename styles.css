@@ -3,7 +3,7 @@
 	font-size: var(--path-title-plugin-font-size);
 	vertical-align: middle;
 	opacity: 75%;
-	padding: 2px;
+	padding: var(--path-title-plugin-padding-size);
 	margin-right: 0.5em;
 	border: var(--path-title-plugin-border-size) solid
 		var(--background-modifier-border);
