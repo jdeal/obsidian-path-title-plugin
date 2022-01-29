@@ -503,6 +503,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 		// 		});
 		// 	});
 
+		let currentSelectedMappingPath = "";
 		let currentSelectedMappingFolder = "";
 		const regexOption = ":/regex/:";
 
@@ -519,9 +520,9 @@ class PathTitleSettingTab extends PluginSettingTab {
 				dropdown.addOptions(
 					arrayToChoices(getFolderPaths(this.plugin.app))
 				);
-				currentSelectedMappingFolder = dropdown.getValue();
+				currentSelectedMappingPath = dropdown.getValue();
 				dropdown.onChange((value) => {
-					currentSelectedMappingFolder = value;
+					currentSelectedMappingPath = value;
 				});
 			})
 			.addExtraButton((button) => {
@@ -531,8 +532,8 @@ class PathTitleSettingTab extends PluginSettingTab {
 					.onClick(async () => {
 						this.plugin.settings.pathSettings.push({
 							type: "exact",
-							match: currentSelectedMappingFolder,
-							replace: currentSelectedMappingFolder,
+							match: currentSelectedMappingPath,
+							replace: currentSelectedMappingPath,
 						});
 						await this.plugin.saveSettings();
 						this.display();
@@ -723,9 +724,14 @@ class PathTitleSettingTab extends PluginSettingTab {
 						.setIcon("trash")
 						.setTooltip("Remove replacement")
 						.onClick(async () => {
-							this.plugin.settings.pathSettings.splice(index, 1);
-							await this.plugin.saveSettings();
-							this.display();
+							if (confirm(`Remove replacement ${index + 1}?`)) {
+								this.plugin.settings.pathSettings.splice(
+									index,
+									1
+								);
+								await this.plugin.saveSettings();
+								this.display();
+							}
 						});
 				})
 				.addExtraButton((button) => {
