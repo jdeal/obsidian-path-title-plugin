@@ -12,8 +12,6 @@ import {
 	TFolder,
 } from "obsidian";
 
-// Remember to rename these classes and interfaces!
-
 interface PathSettings {
 	type: string;
 	match: string;
@@ -384,125 +382,6 @@ class PathTitleSettingTab extends PluginSettingTab {
 					});
 			});
 
-		// new Setting(containerEl)
-		// 	.setName("Folder Replacement")
-		// 	.setDesc(
-		// 		"Provide a regular expression, and each folder will be replaced with what it matches"
-		// 	)
-		// 	.addText((text) => {
-		// 		text.onChange(async (value) => {
-		// 			this.plugin.settings.regexReplace = value;
-		// 			await this.plugin.saveSettings();
-		// 		});
-		// 	});
-
-		/////////////
-
-		// containerEl.createEl("h2", {}, (el) => {
-		// 	el.setText("Default Settings");
-		// });
-
-		// new Setting(containerEl)
-		// 	.setName("Style")
-		// 	.setDesc("How the path looks: position, size, border")
-		// 	.addDropdown((dropdown) => {
-		// 		dropdown
-		// 			.addOptions({
-		// 				before: "Before",
-		// 				after: "After",
-		// 			})
-		// 			.setValue(this.plugin.settings.position)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.position = value;
-		// 				await this.plugin.saveSettings();
-		// 			});
-		// 	})
-		// 	.addDropdown((dropdown) => {
-		// 		dropdown
-		// 			.addOptions({
-		// 				"100%": "Large",
-		// 				"75%": "Medium",
-		// 				"63%": "Small",
-		// 			})
-		// 			.setValue(
-		// 				this.plugin.settings.fontSize ||
-		// 					DEFAULT_SETTINGS.fontSize
-		// 			)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.fontSize = value;
-		// 				await this.plugin.saveSettings();
-		// 			});
-		// 	})
-		// 	.addDropdown((dropdown) => {
-		// 		dropdown
-		// 			.addOptions({
-		// 				"1px": "Border",
-		// 				"0px": "No Border",
-		// 			})
-		// 			.setValue(this.plugin.settings.borderSize)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.borderSize = value;
-		// 				await this.plugin.saveSettings();
-		// 			});
-		// 	});
-
-		// new Setting(containerEl)
-		// 	.setName("Max Size")
-		// 	.setDesc("Maximum number of characters before truncating")
-		// 	.addText((text) => {
-		// 		text.setValue(
-		// 			this.plugin.settings.maxSize === Infinity ||
-		// 				!this.plugin.settings.maxSize
-		// 				? ""
-		// 				: String(this.plugin.settings.maxSize)
-		// 		).onChange(async (value) => {
-		// 			try {
-		// 				this.plugin.settings.maxSize = Number(value);
-		// 			} catch (e) {
-		// 				this.plugin.settings.maxSize = Infinity;
-		// 			}
-		// 			await this.plugin.saveSettings();
-		// 		});
-		// 	});
-
-		// new Setting(containerEl)
-		// 	.setName("Ellipsis When Truncated")
-		// 	.setDesc(
-		// 		"If Max Size is set, show an ellipsis if path is truncated"
-		// 	)
-		// 	.addToggle((toggle) => {
-		// 		toggle
-		// 			.setValue(this.plugin.settings.showEllipsis)
-		// 			.onChange(async (value) => {
-		// 				this.plugin.settings.showEllipsis = value;
-		// 				await this.plugin.saveSettings();
-		// 			});
-		// 	});
-
-		// new Setting(containerEl)
-		// 	.setName("Regular Expression Match")
-		// 	.setDesc(
-		// 		"Use a regular expression to match parts of the path to be replaced."
-		// 	)
-		// 	.addText((text) => {
-		// 		text.onChange(async (value) => {
-		// 			this.plugin.settings.regexMatch = value;
-		// 			await this.plugin.saveSettings();
-		// 		});
-		// 	});
-
-		// new Setting(containerEl)
-		// 	.setName("Regular Expression Replace")
-		// 	.setDesc(
-		// 		"If a regular expression is provided, provide the text which replaces the match."
-		// 	)
-		// 	.addText((text) => {
-		// 		text.onChange(async (value) => {
-		// 			this.plugin.settings.regexReplace = value;
-		// 			await this.plugin.saveSettings();
-		// 		});
-		// 	});
-
 		let currentSelectedMappingPath = "";
 		let currentSelectedMappingFolder = "";
 		const regexOption = ":/regex/:";
@@ -783,56 +662,5 @@ class PathTitleSettingTab extends PluginSettingTab {
 						});
 				});
 		}
-
-		/*
-		for (const [
-			index,
-			pathMapping,
-		] of this.plugin.settings.pathMappings.entries()) {
-			let headingEl: HTMLHeadingElement = null;
-			const defaultHeading = "?";
-			containerEl.createEl("h3", {}, (el) => {
-				el.setText(pathMapping[0] || defaultHeading);
-				headingEl = el;
-			});
-
-			new Setting(containerEl)
-				.setName("Original Path")
-				.addText((text) => {
-					text.setValue(pathMapping[0] || "").onChange(
-						async (value) => {
-							this.plugin.settings.pathMappings[index][0] = value;
-							await this.plugin.saveSettings();
-							headingEl.setText(value || defaultHeading);
-						}
-					);
-				});
-
-			new Setting(containerEl)
-				.setName("Replacement Path")
-				.addText((text) => {
-					text.setValue(pathMapping[1] || "").onChange(
-						async (value) => {
-							this.plugin.settings.pathMappings[index][1] = value;
-							await this.plugin.saveSettings();
-						}
-					);
-				});
-
-			new Setting(containerEl)
-				.setName("Remove Path Settings")
-				.addExtraButton((button) => {
-					button
-						.setIcon("trash")
-						.setTooltip("Remove Path Settings")
-						.onClick(async () => {
-							this.plugin.settings.pathMappings.splice(index, 1);
-							this.plugin.settings.pathMappings.sort();
-							await this.plugin.saveSettings();
-							this.display();
-						});
-				});
-		}
-*/
 	}
 }
