@@ -17,3 +17,11 @@
 .path-title-plugin-has-path .view-header-title::after {
 	content: var(--path-title-plugin-title-after);
 }
+
+.path-title-plugin-undo-container {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 5px;
+	padding-top: 18px;
+	padding-left: 18px;
+	padding-right: 18px;
+}

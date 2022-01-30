@@ -313,10 +313,12 @@ const replacementTypeToUi: {
 
 class PathTitleSettingTab extends PluginSettingTab {
 	plugin: PathTitlePlugin;
+	undoReplacementEntry: [number, PathSettings];
 
 	constructor(app: App, plugin: PathTitlePlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+		this.undoReplacementEntry = null;
 	}
 
 	display(): void {
@@ -414,6 +416,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 							match: currentSelectedMappingPath,
 							replace: currentSelectedMappingPath,
 						});
+						this.undoReplacementEntry = null;
 						await this.plugin.saveSettings();
 						this.display();
 					});
@@ -447,6 +450,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 							match: currentSelectedMappingFolder,
 							replace: currentSelectedMappingFolder,
 						});
+						this.undoReplacementEntry = null;
 						await this.plugin.saveSettings();
 						this.display();
 					});
@@ -465,6 +469,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 						match: "",
 						replace: "",
 					});
+					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
 					this.display();
 				});
@@ -477,6 +482,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 						match: "",
 						replace: "",
 					});
+					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
 					this.display();
 				});
@@ -495,6 +501,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 						match: "",
 						replace: "",
 					});
+					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
 					this.display();
 				});
@@ -507,15 +514,59 @@ class PathTitleSettingTab extends PluginSettingTab {
 						match: "",
 						replace: "",
 					});
+					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
 					this.display();
 				});
 			});
 
-		for (const [
-			index,
-			pathSettings,
-		] of this.plugin.settings.pathSettings.entries()) {
+		const entries = Array.from(this.plugin.settings.pathSettings.entries());
+		if (this.undoReplacementEntry) {
+			entries.splice(
+				this.undoReplacementEntry[0],
+				0,
+				this.undoReplacementEntry
+			);
+		}
+
+		for (const [index, pathSettings] of entries) {
+			if (
+				this.undoReplacementEntry &&
+				pathSettings === this.undoReplacementEntry[1]
+			) {
+				containerEl.createDiv(
+					{ cls: "path-title-plugin-undo-container" },
+					(el) => {
+						const heading = replacementTypeToUi[
+							pathSettings.type
+						].heading(pathSettings.match);
+						new Setting(el)
+							.setDesc(`Replacement where ${heading} removed`)
+							.addButton((button) => {
+								button.setButtonText("Undo");
+								button.onClick(async () => {
+									this.plugin.settings.pathSettings.splice(
+										index,
+										0,
+										pathSettings
+									);
+									await this.plugin.saveSettings();
+									this.undoReplacementEntry = null;
+									this.display();
+								});
+							})
+							.addExtraButton((button) => {
+								button.setIcon("cross");
+								button.onClick(() => {
+									this.undoReplacementEntry = null;
+									this.display();
+								});
+							});
+					}
+				);
+				continue;
+			}
+
 			let headingEl: HTMLHeadingElement = null;
 			let matchSetting: Setting = null;
 			let replacementSetting: Setting = null;
@@ -603,14 +654,10 @@ class PathTitleSettingTab extends PluginSettingTab {
 						.setIcon("trash")
 						.setTooltip("Remove replacement")
 						.onClick(async () => {
-							if (confirm(`Remove replacement ${index + 1}?`)) {
-								this.plugin.settings.pathSettings.splice(
-									index,
-									1
-								);
-								await this.plugin.saveSettings();
-								this.display();
-							}
+							this.plugin.settings.pathSettings.splice(index, 1);
+							await this.plugin.saveSettings();
+							this.undoReplacementEntry = [index, pathSettings];
+							this.display();
 						});
 				})
 				.addExtraButton((button) => {
