@@ -1,9 +1,5 @@
 import {
 	App,
-	Editor,
-	MarkdownView,
-	Modal,
-	Notice,
 	Plugin,
 	PluginSettingTab,
 	Setting,
@@ -24,9 +20,6 @@ interface PathTitlePluginSettings {
 	borderSize: string;
 	regexMatch: string;
 	regexReplace: string;
-	// maxSize: number;
-	// showEllipsis: boolean;
-	pathMappings: Array<Array<string>>;
 	pathSettings: Array<PathSettings>;
 }
 
@@ -36,9 +29,6 @@ const DEFAULT_SETTINGS: PathTitlePluginSettings = {
 	borderSize: "1px",
 	regexMatch: "",
 	regexReplace: "",
-	// maxSize: Infinity,
-	// showEllipsis: true,
-	pathMappings: [],
 	pathSettings: [],
 };
 
@@ -144,14 +134,6 @@ export default class PathTitlePlugin extends Plugin {
 	}
 
 	setPaneTitles() {
-		const pathMappings = this.settings.pathMappings.reduce(
-			(result, mapping) => {
-				result[mapping[0]] = mapping[1];
-				return result;
-			},
-			{} as Record<string, string>
-		);
-
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			if (leaf.view instanceof FileView) {
 				const fileView = leaf.view as FileView;
@@ -244,9 +226,6 @@ export default class PathTitlePlugin extends Plugin {
 			DEFAULT_SETTINGS,
 			await this.loadData()
 		);
-		// if (!this.settings.maxSize) {
-		// 	this.settings.maxSize = Infinity;
-		// }
 	}
 
 	async saveSettings() {
@@ -386,7 +365,6 @@ class PathTitleSettingTab extends PluginSettingTab {
 
 		let currentSelectedMappingPath = "";
 		let currentSelectedMappingFolder = "";
-		const regexOption = ":/regex/:";
 
 		containerEl.createEl("h2", {}, (el) => {
 			el.setText("Path Replacement Settings");
@@ -648,7 +626,6 @@ class PathTitleSettingTab extends PluginSettingTab {
 			setSettingUi(this.plugin.settings.pathSettings[index]);
 
 			new Setting(containerEl)
-				//.setName("Remove Path Settings")
 				.addExtraButton((button) => {
 					button
 						.setIcon("trash")
