@@ -103,6 +103,9 @@ export class PathTitlePlugin extends Plugin {
 						);
 					}
 				} else {
+					leaf.view.containerEl.removeClass(
+						"path-title-plugin-has-path"
+					);
 					leaf.view.containerEl.style.removeProperty(
 						"--path-title-plugin-title-before"
 					);
@@ -126,13 +129,22 @@ export class PathTitlePlugin extends Plugin {
 	onunload() {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			if (leaf.view instanceof FileView) {
+				leaf.view.containerEl.removeClass("path-title-plugin-has-path");
 				leaf.view.containerEl.style.removeProperty(
 					"--path-title-plugin-title-before"
 				);
 				leaf.view.containerEl.style.removeProperty(
 					"--path-title-plugin-title-after"
 				);
-				leaf.view.containerEl.removeClass("path-title-plugin-has-path");
+				leaf.view.containerEl.style.removeProperty(
+					"--path-title-plugin-border-size"
+				);
+				leaf.view.containerEl.style.removeProperty(
+					"--path-title-plugin-padding-size"
+				);
+				leaf.view.containerEl.style.removeProperty(
+					"--path-title-plugin-font-size"
+				);
 			}
 		});
 	}
