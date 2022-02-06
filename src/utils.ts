@@ -1,9 +1,5 @@
 import { PathSettings } from "./types";
 
-export function escapeForRegExp(text: string) {
-	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/gu, "\\$&");
-}
-
 export function applyPathSettings(
 	allPathSettings: Array<PathSettings>,
 	path: string
@@ -18,15 +14,15 @@ export function applyPathSettings(
 				return currentPath.replace(re, pathSettings.replace);
 			}
 			if (pathSettings.type === "folder") {
-				const matchFolder = escapeForRegExp(pathSettings.match);
-				const replacementFolder = pathSettings.replace.replace(
-					"$",
-					"$$"
-				);
-				return currentPath.replace(
-					new RegExp(`(^|/)${matchFolder}($|/)`, "gu"),
-					`$1${replacementFolder}$2`
-				);
+				return currentPath
+					.split("/")
+					.map((folder) => {
+						if (folder === pathSettings.match) {
+							return pathSettings.replace;
+						}
+						return folder;
+					})
+					.join("/");
 			}
 			if (pathSettings.type === "exact") {
 				if (currentPath === pathSettings.match) {

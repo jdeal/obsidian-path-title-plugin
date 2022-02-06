@@ -1,14 +1,4 @@
-import {
-	escapeForRegExp,
-	applyPathSettings,
-	getAllFolderNames,
-	arrayToChoices,
-} from "./utils";
-
-test("escape strings for regular expressions", () => {
-	expect(escapeForRegExp("abc")).toBe("abc");
-	expect(escapeForRegExp("abc[0-9]*")).toBe("abc\\[0\\-9\\]\\*");
-});
+import { applyPathSettings, getAllFolderNames, arrayToChoices } from "./utils";
 
 test("apply no path settings to path", () => {
 	expect(applyPathSettings([], "trash/notes")).toBe("trash/notes");

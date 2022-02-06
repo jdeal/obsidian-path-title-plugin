@@ -10,12 +10,7 @@ import {
 
 import { PathTitlePluginSettings, PathSettings } from "./types";
 import { defaultSettings } from "./constants";
-import {
-	escapeForRegExp,
-	applyPathSettings,
-	getAllFolderNames,
-	arrayToChoices,
-} from "./utils";
+import { applyPathSettings, getAllFolderNames, arrayToChoices } from "./utils";
 
 function getFolderPaths(app: App) {
 	const folders: Array<string> = [];
@@ -33,6 +28,7 @@ function getFolderPaths(app: App) {
 
 export class PathTitlePlugin extends Plugin {
 	settings: PathTitlePluginSettings;
+	cachedReplacedPaths: Record<string, string> = {};
 
 	async onload() {
 		await this.loadSettings();
@@ -50,6 +46,21 @@ export class PathTitlePlugin extends Plugin {
 		});
 	}
 
+	getCachedReplacedPath(path: string) {
+		if (!(path in this.cachedReplacedPaths)) {
+			const replacedPath = applyPathSettings(
+				this.settings.pathSettings,
+				path
+			);
+			this.cachedReplacedPaths[path] = replacedPath;
+		}
+		return this.cachedReplacedPaths[path];
+	}
+
+	flushCachedReplacedPaths() {
+		this.cachedReplacedPaths = {};
+	}
+
 	setPaneTitles() {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			if (leaf.view instanceof FileView) {
@@ -57,10 +68,7 @@ export class PathTitlePlugin extends Plugin {
 				const path = fileView.file.parent
 					? fileView.file.parent.path
 					: "";
-				const replacedPath = applyPathSettings(
-					this.settings.pathSettings,
-					path
-				);
+				const replacedPath = this.getCachedReplacedPath(path);
 
 				if (replacedPath) {
 					leaf.view.containerEl.style.setProperty(
@@ -159,6 +167,7 @@ export class PathTitlePlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+		this.flushCachedReplacedPaths();
 		this.setPaneTitles();
 	}
 }
@@ -206,10 +215,7 @@ const replacementTypeToUi: {
 	},
 	regexp: {
 		heading: (match) =>
-			`Path matches regular expression /${escapeForRegExp(match).replace(
-				"/",
-				"\\/"
-			)}/`,
+			`Path matches regular expression /${match.replace("/", "\\/")}/`,
 		matchName: "Matching Regular Expression",
 		matchDesc:
 			"Regular expression to match part of path (or full path) that will be replaced",
