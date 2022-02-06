@@ -10,7 +10,13 @@ import {
 
 import { PathTitlePluginSettings, PathSettings } from "./types";
 import { defaultSettings } from "./constants";
-import { applyPathSettings, getAllFolderNames, arrayToChoices } from "./utils";
+import {
+	applyPathSettings,
+	getAllFolderNames,
+	arrayToChoices,
+	escapeQuotes,
+	escapeSlashes,
+} from "./utils";
 
 function getFolderPaths(app: App) {
 	const folders: Array<string> = [];
@@ -46,6 +52,7 @@ export class PathTitlePlugin extends Plugin {
 		});
 	}
 
+	// Apply path settings and cache for this path
 	getCachedReplacedPath(path: string) {
 		if (!(path in this.cachedReplacedPaths)) {
 			const replacedPath = applyPathSettings(
@@ -61,6 +68,7 @@ export class PathTitlePlugin extends Plugin {
 		this.cachedReplacedPaths = {};
 	}
 
+	// Find all file panes and show paths
 	setPaneTitles() {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			if (leaf.view instanceof FileView) {
@@ -172,14 +180,6 @@ export class PathTitlePlugin extends Plugin {
 	}
 }
 
-function escapeQuotes(s: string) {
-	return s.replace('"', '\\"');
-}
-
-function escapeSlashes(s: string) {
-	return s.replace("/", "\\/");
-}
-
 const replacementTypeToUi: {
 	[key: string]: {
 		heading: (match: string) => string;
@@ -227,6 +227,7 @@ const replacementTypeToUi: {
 
 class PathTitleSettingTab extends PluginSettingTab {
 	plugin: PathTitlePlugin;
+	// Save the last deleted replacement so we can undo it
 	undoReplacementEntry: [number, PathSettings];
 
 	constructor(app: App, plugin: PathTitlePlugin) {
@@ -298,7 +299,9 @@ class PathTitleSettingTab extends PluginSettingTab {
 					});
 			});
 
+		// Current value of dropdown to select a path to add
 		let currentSelectedMappingPath = "";
+		// Current value of dropdown to select a folder to add
 		let currentSelectedMappingFolder = "";
 
 		containerEl.createEl("h2", {}, (el) => {
@@ -480,6 +483,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 				continue;
 			}
 
+			// These get mutated when you change the type of the path settings
 			let headingEl: HTMLHeadingElement = null;
 			let matchSetting: Setting = null;
 			let replacementSetting: Setting = null;

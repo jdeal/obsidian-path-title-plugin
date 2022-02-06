@@ -1,5 +1,6 @@
 import { PathSettings } from "./types";
 
+// For a given path, loop through all path settings and apply replacements.
 export function applyPathSettings(
 	allPathSettings: Array<PathSettings>,
 	path: string
@@ -40,6 +41,8 @@ export function applyPathSettings(
 	}, path);
 }
 
+// Get unique folder names from a list of paths
+// I.e. ['a', 'a/b'] would return ['a', 'b']
 export function getAllFolderNames(folderPaths: string[]) {
 	const folderNameSet = folderPaths.reduce((result, path) => {
 		if (path !== "/") {
@@ -52,9 +55,18 @@ export function getAllFolderNames(folderPaths: string[]) {
 	return Array.from(folderNameSet);
 }
 
+// Convert an array of values to a map used for dropdown choices
 export function arrayToChoices(array: Array<string>) {
 	return array.reduce((result, item) => {
 		result[item] = item;
 		return result;
 	}, {} as Record<string, string>);
+}
+
+export function escapeQuotes(s: string) {
+	return s.replace('"', '\\"');
+}
+
+export function escapeSlashes(s: string) {
+	return s.replace("/", "\\/");
 }
