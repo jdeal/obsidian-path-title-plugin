@@ -1,7 +1,7 @@
 import { PathSettings } from "./types";
 
 export function escapeForRegExp(text: string) {
-	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/gu, "\\$&");
 }
 
 export function applyPathSettings(
@@ -14,7 +14,7 @@ export function applyPathSettings(
 				pathSettings.type === "regexp" ||
 				pathSettings.type === "fuzzy"
 			) {
-				const re = new RegExp(pathSettings.match, "g");
+				const re = new RegExp(pathSettings.match, "gu");
 				return currentPath.replace(re, pathSettings.replace);
 			}
 			if (pathSettings.type === "folder") {
@@ -24,7 +24,7 @@ export function applyPathSettings(
 					"$$"
 				);
 				return currentPath.replace(
-					new RegExp(`(^|/)${matchFolder}($|/)`, "g"),
+					new RegExp(`(^|/)${matchFolder}($|/)`, "gu"),
 					`$1${replacementFolder}$2`
 				);
 			}
