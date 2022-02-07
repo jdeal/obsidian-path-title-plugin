@@ -190,8 +190,7 @@ const replacementTypeToUi: {
 	};
 } = {
 	exact: {
-		heading: (match) =>
-			`Path exactly matches "${escapeSlashes(escapeQuotes(match))}"`,
+		heading: (match) => `Path exactly matches "${escapeQuotes(match)}"`,
 		matchName: "Matching Path",
 		matchDesc: "Exact path that will be replaced",
 		replaceName: "Replacement Path",
@@ -215,7 +214,7 @@ const replacementTypeToUi: {
 	},
 	regexp: {
 		heading: (match) =>
-			`Path matches regular expression /${match.replace("/", "\\/")}/`,
+			`Path matches regular expression /${escapeSlashes(match)}/`,
 		matchName: "Matching Regular Expression",
 		matchDesc:
 			"Regular expression to match part of path (or full path) that will be replaced",

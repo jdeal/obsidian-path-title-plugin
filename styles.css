@@ -4,7 +4,6 @@
 	vertical-align: middle;
 	opacity: 75%;
 	padding: var(--path-title-plugin-padding-size);
-	margin-right: 0.5em;
 	border: var(--path-title-plugin-border-size) solid
 		var(--background-modifier-border);
 	border-radius: 5px;
@@ -12,10 +11,12 @@
 
 .path-title-plugin-has-path .view-header-title::before {
 	content: var(--path-title-plugin-title-before);
+	margin-right: 0.5em;
 }
 
 .path-title-plugin-has-path .view-header-title::after {
 	content: var(--path-title-plugin-title-after);
+	margin-left: 0.5em;
 }
 
 .path-title-plugin-undo-container {
