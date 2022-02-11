@@ -79,60 +79,75 @@ export class PathTitlePlugin extends Plugin {
 				const replacedPath = this.getCachedReplacedPath(path);
 
 				if (replacedPath) {
-					leaf.view.containerEl.style.setProperty(
-						"--path-title-plugin-border-size",
-						this.settings.borderSize || defaultSettings.borderSize
+					leaf.view.containerEl.addClass(
+						"path-title-plugin-has-path"
 					);
-					if (this.settings.borderSize === "0px") {
-						leaf.view.containerEl.style.setProperty(
-							"--path-title-plugin-padding-size",
-							"0px"
+
+					if (
+						!leaf.view.containerEl.find(
+							".path-title-plugin-path-title-container"
+						)
+					) {
+						// Add the path container if it doesn't exist.
+						const pathContainerEl =
+							leaf.view.containerEl.createEl("div");
+						pathContainerEl.addClass(
+							"path-title-plugin-path-title-container"
 						);
-					} else {
-						leaf.view.containerEl.style.setProperty(
-							"--path-title-plugin-padding-size",
-							"2px"
+						const headerTitleContainerEl =
+							leaf.view.containerEl.find(
+								".view-header-title-container"
+							);
+						const titleEl =
+							headerTitleContainerEl.find(".view-header-title");
+
+						// Copy the title styles over to our container.
+						const titleStyle = window.getComputedStyle(titleEl);
+						pathContainerEl.style.lineHeight =
+							titleStyle.getPropertyValue("line-height");
+						pathContainerEl.style.fontSize =
+							titleStyle.getPropertyValue("font-size");
+						pathContainerEl.style.fontWeight =
+							titleStyle.getPropertyValue("font-weight");
+
+						headerTitleContainerEl.prepend(pathContainerEl);
+
+						// Add the block element to hold the path.
+						const pathEl = pathContainerEl.createEl("div");
+						pathEl.addClass("path-title-plugin-path-title");
+						pathContainerEl.append(pathEl);
+						// Add the inline element to hold the path text.
+						const pathTextEl = pathContainerEl.createEl("span");
+						pathTextEl.addClass(
+							"path-title-plugin-path-title-text"
 						);
+						pathEl.append(pathTextEl);
 					}
+					leaf.view.containerEl.find(
+						".path-title-plugin-path-title-container"
+					).style.display = "";
+					const pathTextEl = leaf.view.containerEl.find(
+						".path-title-plugin-path-title-text"
+					);
+					pathTextEl.setText(replacedPath);
+
 					leaf.view.containerEl.style.setProperty(
 						"--path-title-plugin-font-size",
 						this.settings.fontSize || defaultSettings.fontSize
 					);
-					leaf.view.containerEl.addClass(
-						"path-title-plugin-has-path"
-					);
-					if (this.settings.position === "after") {
-						leaf.view.containerEl.style.setProperty(
-							"--path-title-plugin-title-after",
-							`'${replacedPath}'`
-						);
-						leaf.view.containerEl.style.removeProperty(
-							"--path-title-plugin-title-before"
-						);
-					} else {
-						leaf.view.containerEl.style.setProperty(
-							"--path-title-plugin-title-before",
-							`'${replacedPath}'`
-						);
-						leaf.view.containerEl.style.removeProperty(
-							"--path-title-plugin-title-after"
-						);
-					}
 				} else {
+					if (
+						leaf.view.containerEl.find(
+							".path-title-plugin-path-title-container"
+						)
+					) {
+						leaf.view.containerEl.find(
+							".path-title-plugin-path-title-container"
+						).style.display = "none";
+					}
+
 					leaf.view.containerEl.removeClass(
 						"path-title-plugin-has-path"
-					);
-					leaf.view.containerEl.style.removeProperty(
-						"--path-title-plugin-title-before"
-					);
-					leaf.view.containerEl.style.removeProperty(
-						"--path-title-plugin-title-after"
-					);
-					leaf.view.containerEl.style.removeProperty(
-						"--path-title-plugin-border-size"
-					);
-					leaf.view.containerEl.style.removeProperty(
-						"--path-title-plugin-padding-size"
 					);
 					leaf.view.containerEl.style.removeProperty(
 						"--path-title-plugin-font-size"
@@ -146,18 +161,6 @@ export class PathTitlePlugin extends Plugin {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			if (leaf.view instanceof FileView) {
 				leaf.view.containerEl.removeClass("path-title-plugin-has-path");
-				leaf.view.containerEl.style.removeProperty(
-					"--path-title-plugin-title-before"
-				);
-				leaf.view.containerEl.style.removeProperty(
-					"--path-title-plugin-title-after"
-				);
-				leaf.view.containerEl.style.removeProperty(
-					"--path-title-plugin-border-size"
-				);
-				leaf.view.containerEl.style.removeProperty(
-					"--path-title-plugin-padding-size"
-				);
 				leaf.view.containerEl.style.removeProperty(
 					"--path-title-plugin-font-size"
 				);
@@ -245,24 +248,6 @@ class PathTitleSettingTab extends PluginSettingTab {
 		});
 
 		new Setting(containerEl)
-			.setName("Path Position")
-			.setDesc(
-				"Where the path is displayed: before or after the filename"
-			)
-			.addDropdown((dropdown) => {
-				dropdown
-					.addOptions({
-						before: "Before",
-						after: "After",
-					})
-					.setValue(this.plugin.settings.position)
-					.onChange(async (value) => {
-						this.plugin.settings.position = value;
-						await this.plugin.saveSettings();
-					});
-			});
-
-		new Setting(containerEl)
 			.setName("Path Font Size")
 			.setDesc(`Font size of the path`)
 			.addDropdown((dropdown) => {
@@ -278,22 +263,6 @@ class PathTitleSettingTab extends PluginSettingTab {
 					)
 					.onChange(async (value) => {
 						this.plugin.settings.fontSize = value;
-						await this.plugin.saveSettings();
-					});
-			});
-
-		new Setting(containerEl)
-			.setName("Path Border")
-			.setDesc(`Whether or not the path has a border`)
-			.addDropdown((dropdown) => {
-				dropdown
-					.addOptions({
-						"1px": "Border",
-						"0px": "No Border",
-					})
-					.setValue(this.plugin.settings.borderSize)
-					.onChange(async (value) => {
-						this.plugin.settings.borderSize = value;
 						await this.plugin.saveSettings();
 					});
 			});

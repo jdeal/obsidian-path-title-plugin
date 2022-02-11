@@ -5,8 +5,6 @@ export interface PathSettings {
 }
 
 export interface PathTitlePluginSettings {
-	position: string;
 	fontSize: string;
-	borderSize: string;
 	pathSettings: Array<PathSettings>;
 }

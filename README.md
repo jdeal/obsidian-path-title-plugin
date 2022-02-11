@@ -1,18 +1,14 @@
 # Obsidian Path Title
 
-Show the path of the current file next to the filename.
+Show the path of the current file next to its name.
 
-![](https://cdn.zappy.app/d39a465a40edeafb691552c18da37d68.png)
+![](https://cdn.zappy.app/2480008e89fcb8b9ca52eacaf7022f8b.png)
 
 ## Usage
 
-After you install, you'll get the behavior shown above, where the full path will show before the filename. There are few general options in the settings to change the appearance:
+After you install, you'll get the behavior shown above, where the full path will shown before the file name. There is one basic option to change the appearance:
 
-**Path Position:** Show the path before or after the filename.
-
-**Path Font Size:** Make the path bigger or smaller.
-
-**Path Border:** Whether or not the path has a border around it.
+**Path Font Size:** Defaults to Medium, which is slightly smaller than the file name font. Set it to Large to make it the same size as the file name font or Small to make it even smaller.
 
 ## Advanced Usage
 
@@ -24,7 +20,7 @@ You can replace an exact match of the whole path with an alternate path. For exa
 
 ![](https://cdn.zappy.app/c7c80545823b131908a173aff455059a.png)
 
-![](https://cdn.zappy.app/4fc7e97d08ff798326a923f4ba2ea7f3.png)
+![](https://cdn.zappy.app/b3f04d7599f777aba73faf432df023de.png)
 
 ### Exact Folder Replacement
 
@@ -32,19 +28,19 @@ You can replace an exact match of one folder in the path with an alternate folde
 
 ![](https://cdn.zappy.app/44c39537ea4aef649577a854a335f92c.png)
 
-![](https://cdn.zappy.app/13eb8ff0cda2f01251109ffc57ba1144.png)
+![](https://cdn.zappy.app/2ebeb35ecd46ce5325f071323f9f8e66.png)
 
 ### Text Replacement
 
-You can replace text anywhere in the path with alternate text. For example, here we replace "001." with "1.". This allows you to change multiple paths with a single rule.
+You can replace text anywhere in the path with alternate text. For example, here we replace "001." with "1.".
 
 ![](https://cdn.zappy.app/54641a2295ecde28d2b3ab08d43f074e.png)
 
-![](https://cdn.zappy.app/29bc0065ddcf7571fcbb2eab819ddeaa.png)
+![](https://cdn.zappy.app/1ce42f3bce22a390ffb31bf218e5a61b.png)
 
 ### Regular Expression Replacement
 
-You can use a regular expression to match text anywhere in the path and replace it with alternate text, using $1, $2, etc. to insert groups matched by the regular expression.
+You can use a regular expression to match text anywhere in the path and replace it with alternate text, using $1, $2, etc. to insert groups matched by the regular expression. This allows you to change multiple paths with a single rule.
 
 ![](https://cdn.zappy.app/4a49fc9af3368e517121c63a2c7274ad.png)
 
