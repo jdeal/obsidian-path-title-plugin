@@ -41,15 +41,19 @@ export class PathTitlePlugin extends Plugin {
 
 		this.addSettingTab(new PathTitleSettingTab(this.app, this));
 
-		this.app.workspace.on("file-open", () => {
-			this.setPaneTitles();
-		});
+		this.registerEvent(
+			this.app.workspace.on("file-open", () => {
+				this.setPaneTitles();
+			})
+		);
 
 		this.setPaneTitles();
 
-		this.app.vault.on("rename", () => {
-			this.setPaneTitles();
-		});
+		this.registerEvent(
+			this.app.vault.on("rename", () => {
+				this.setPaneTitles();
+			})
+		);
 	}
 
 	// Apply path settings and cache for this path
