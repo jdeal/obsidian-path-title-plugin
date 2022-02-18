@@ -44,6 +44,6 @@ You can use a regular expression to match text anywhere in the path and replace 
 
 ![](https://cdn.zappy.app/4a49fc9af3368e517121c63a2c7274ad.png)
 
-![](https://cdn.zappy.app/7421c2dd13054505908d8b238f9f40ab.png)
+![](https://cdn.zappy.app/1ce42f3bce22a390ffb31bf218e5a61b.png)
 
-![](https://cdn.zappy.app/55704a499b40d0c01a6acb6a570357b7.png)
+![](https://cdn.zappy.app/8ca611abe0aefcac318ec13c149a6c11.png)
