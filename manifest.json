@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-path-title",
 	"name": "Path Title",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"minAppVersion": "0.12.0",
 	"description": "Adds path (or optional replacement) to the filename title of each pane",
 	"author": "jdeal",
