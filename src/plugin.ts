@@ -129,11 +129,11 @@ export class PathTitlePlugin extends Plugin {
 						this.settings.fontSize || defaultSettings.fontSize
 					);
 				} else {
-					const pathTitleContainerEl = leaf.view.containerEl.find(
+					const pathContainerEl = leaf.view.containerEl.find(
 						".path-title-plugin-path-title-container"
 					);
-					if (pathTitleContainerEl) {
-						pathTitleContainerEl.detach();
+					if (pathContainerEl) {
+						pathContainerEl.detach();
 					}
 
 					leaf.view.containerEl.removeClass(
