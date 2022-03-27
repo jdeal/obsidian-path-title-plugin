@@ -7,17 +7,17 @@ import {
 	Vault,
 	TFolder,
 	debounce,
-} from 'obsidian';
+} from "obsidian";
 
-import { PathTitlePluginSettings, PathSettings } from './types';
-import { defaultSettings } from './constants';
+import { PathTitlePluginSettings, PathSettings } from "./types";
+import { defaultSettings } from "./constants";
 import {
 	applyPathSettings,
 	getAllFolderNames,
 	arrayToChoices,
 	escapeQuotes,
 	escapeSlashes,
-} from './utils';
+} from "./utils";
 
 function getFolderPaths(app: App) {
 	const folders: Array<string> = [];
@@ -42,7 +42,7 @@ export class PathTitlePlugin extends Plugin {
 		this.addSettingTab(new PathTitleSettingTab(this.app, this));
 
 		this.registerEvent(
-			this.app.workspace.on('file-open', () => {
+			this.app.workspace.on("file-open", () => {
 				this.setPaneTitles();
 			})
 		);
@@ -55,7 +55,7 @@ export class PathTitlePlugin extends Plugin {
 			this.setPaneTitles();
 		}, 100);
 
-		this.registerEvent(this.app.vault.on('rename', onRename));
+		this.registerEvent(this.app.vault.on("rename", onRename));
 	}
 
 	// Find all file panes and show paths
@@ -65,7 +65,7 @@ export class PathTitlePlugin extends Plugin {
 				const fileView = leaf.view as FileView;
 				const path = fileView.file.parent
 					? fileView.file.parent.path
-					: '';
+					: "";
 				const replacedPath = applyPathSettings(
 					this.settings.pathSettings,
 					path
@@ -73,74 +73,74 @@ export class PathTitlePlugin extends Plugin {
 
 				if (replacedPath) {
 					leaf.view.containerEl.addClass(
-						'path-title-plugin-has-path'
+						"path-title-plugin-has-path"
 					);
 
 					if (
 						!leaf.view.containerEl.find(
-							'.path-title-plugin-path-title-container'
+							".path-title-plugin-path-title-container"
 						)
 					) {
 						// Add the path container if it doesn't exist.
 						const pathContainerEl =
-							leaf.view.containerEl.createEl('div');
+							leaf.view.containerEl.createEl("div");
 						pathContainerEl.addClass(
-							'path-title-plugin-path-title-container'
+							"path-title-plugin-path-title-container"
 						);
 						const headerTitleContainerEl =
 							leaf.view.containerEl.find(
-								'.view-header-title-container'
+								".view-header-title-container"
 							);
 						const titleEl =
-							headerTitleContainerEl.find('.view-header-title');
+							headerTitleContainerEl.find(".view-header-title");
 
 						// Copy the title styles over to our container.
 						const titleStyle = window.getComputedStyle(titleEl);
 						pathContainerEl.style.lineHeight =
-							titleStyle.getPropertyValue('line-height');
+							titleStyle.getPropertyValue("line-height");
 						pathContainerEl.style.fontSize =
-							titleStyle.getPropertyValue('font-size');
+							titleStyle.getPropertyValue("font-size");
 						pathContainerEl.style.fontWeight =
-							titleStyle.getPropertyValue('font-weight');
+							titleStyle.getPropertyValue("font-weight");
 
 						headerTitleContainerEl.prepend(pathContainerEl);
 
 						// Add the block element to hold the path.
-						const pathEl = pathContainerEl.createEl('div');
-						pathEl.addClass('path-title-plugin-path-title');
+						const pathEl = pathContainerEl.createEl("div");
+						pathEl.addClass("path-title-plugin-path-title");
 						pathContainerEl.append(pathEl);
 						// Add the inline element to hold the path text.
-						const pathTextEl = pathContainerEl.createEl('span');
+						const pathTextEl = pathContainerEl.createEl("span");
 						pathTextEl.addClass(
-							'path-title-plugin-path-title-text'
+							"path-title-plugin-path-title-text"
 						);
 						pathEl.append(pathTextEl);
 					}
 					leaf.view.containerEl.find(
-						'.path-title-plugin-path-title-container'
-					).style.display = '';
+						".path-title-plugin-path-title-container"
+					).style.display = "";
 					const pathTextEl = leaf.view.containerEl.find(
-						'.path-title-plugin-path-title-text'
+						".path-title-plugin-path-title-text"
 					);
 					pathTextEl.setText(replacedPath);
 
 					leaf.view.containerEl.style.setProperty(
-						'--path-title-plugin-font-size',
+						"--path-title-plugin-font-size",
 						this.settings.fontSize || defaultSettings.fontSize
 					);
 				} else {
 					const pathTitleContainerEl = leaf.view.containerEl.find(
-						'.path-title-plugin-path-title-container'
+						".path-title-plugin-path-title-container"
 					);
 					if (pathTitleContainerEl) {
 						pathTitleContainerEl.detach();
 					}
 
 					leaf.view.containerEl.removeClass(
-						'path-title-plugin-has-path'
+						"path-title-plugin-has-path"
 					);
 					leaf.view.containerEl.style.removeProperty(
-						'--path-title-plugin-font-size'
+						"--path-title-plugin-font-size"
 					);
 				}
 			}
@@ -150,12 +150,12 @@ export class PathTitlePlugin extends Plugin {
 	onunload() {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			if (leaf.view instanceof FileView) {
-				leaf.view.containerEl.removeClass('path-title-plugin-has-path');
+				leaf.view.containerEl.removeClass("path-title-plugin-has-path");
 				leaf.view.containerEl.style.removeProperty(
-					'--path-title-plugin-font-size'
+					"--path-title-plugin-font-size"
 				);
 				leaf.view.containerEl
-					.find('.path-title-plugin-path-title-container')
+					.find(".path-title-plugin-path-title-container")
 					.detach();
 			}
 		});
@@ -186,36 +186,36 @@ const replacementTypeToUi: {
 } = {
 	exact: {
 		heading: (match) => `Path exactly matches "${escapeQuotes(match)}"`,
-		matchName: 'Matching Path',
-		matchDesc: 'Exact path that will be replaced',
-		replaceName: 'Replacement Path',
-		replaceDesc: 'Path that will replace matching path',
+		matchName: "Matching Path",
+		matchDesc: "Exact path that will be replaced",
+		replaceName: "Replacement Path",
+		replaceDesc: "Path that will replace matching path",
 	},
 	folder: {
 		heading: (match) =>
 			`Folder in path exactly matches "${escapeQuotes(match)}"`,
-		matchName: 'Matching Folder',
-		matchDesc: 'Exact folder in path that will be replaced',
-		replaceName: 'Replacement Folder',
-		replaceDesc: 'Folder that will replace matching folder',
+		matchName: "Matching Folder",
+		matchDesc: "Exact folder in path that will be replaced",
+		replaceName: "Replacement Folder",
+		replaceDesc: "Folder that will replace matching folder",
 	},
 	text: {
 		heading: (match) =>
 			`Text anywhere in path matches "${escapeQuotes(match)}"`,
-		matchName: 'Matching Text',
-		matchDesc: 'Text anywhere in path that will be replaced',
-		replaceName: 'Replacement Text',
-		replaceDesc: 'Text that will replace matching text',
+		matchName: "Matching Text",
+		matchDesc: "Text anywhere in path that will be replaced",
+		replaceName: "Replacement Text",
+		replaceDesc: "Text that will replace matching text",
 	},
 	regexp: {
 		heading: (match) =>
 			`Path matches regular expression /${escapeSlashes(match)}/`,
-		matchName: 'Matching Regular Expression',
+		matchName: "Matching Regular Expression",
 		matchDesc:
-			'Regular expression to match part of path (or full path) that will be replaced',
-		replaceName: 'Replacement Text',
+			"Regular expression to match part of path (or full path) that will be replaced",
+		replaceName: "Replacement Text",
 		replaceDesc:
-			'Text that will replace the text that matches the regular expression, can use $1, $2, etc. for groups found in match',
+			"Text that will replace the text that matches the regular expression, can use $1, $2, etc. for groups found in match",
 	},
 };
 
@@ -235,19 +235,19 @@ class PathTitleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {}, (el) => {
-			el.setText('General Settings');
+		containerEl.createEl("h2", {}, (el) => {
+			el.setText("General Settings");
 		});
 
 		new Setting(containerEl)
-			.setName('Path Font Size')
+			.setName("Path Font Size")
 			.setDesc(`Font size of the path`)
 			.addDropdown((dropdown) => {
 				dropdown
 					.addOptions({
-						'100%': 'Large',
-						'75%': 'Medium',
-						'63%': 'Small',
+						"100%": "Large",
+						"75%": "Medium",
+						"63%": "Small",
 					})
 					.setValue(
 						this.plugin.settings.fontSize ||
@@ -260,16 +260,16 @@ class PathTitleSettingTab extends PluginSettingTab {
 			});
 
 		// Current value of dropdown to select a path to add
-		let currentSelectedMappingPath = '';
+		let currentSelectedMappingPath = "";
 		// Current value of dropdown to select a folder to add
-		let currentSelectedMappingFolder = '';
+		let currentSelectedMappingFolder = "";
 
-		containerEl.createEl('h2', {}, (el) => {
-			el.setText('Path Replacement Settings');
+		containerEl.createEl("h2", {}, (el) => {
+			el.setText("Path Replacement Settings");
 		});
 
 		new Setting(containerEl)
-			.setName('Exact Path Replacement')
+			.setName("Exact Path Replacement")
 			.setDesc(
 				`Select one of your folders, and click the "+" button to add an exact path replacement for that path below`
 			)
@@ -284,11 +284,11 @@ class PathTitleSettingTab extends PluginSettingTab {
 			})
 			.addExtraButton((button) => {
 				button
-					.setIcon('plus-with-circle')
-					.setTooltip('Add Replacement')
+					.setIcon("plus-with-circle")
+					.setTooltip("Add Replacement")
 					.onClick(async () => {
 						this.plugin.settings.pathSettings.push({
-							type: 'exact',
+							type: "exact",
 							match: currentSelectedMappingPath,
 							replace: currentSelectedMappingPath,
 						});
@@ -299,7 +299,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Exact Folder Replacement')
+			.setName("Exact Folder Replacement")
 			.setDesc(
 				`Select one of your folder names, and click the "+" button to add an exact folder replacement for that folder in any path`
 			)
@@ -318,11 +318,11 @@ class PathTitleSettingTab extends PluginSettingTab {
 			})
 			.addExtraButton((button) => {
 				button
-					.setIcon('plus-with-circle')
-					.setTooltip('Add Replacement')
+					.setIcon("plus-with-circle")
+					.setTooltip("Add Replacement")
 					.onClick(async () => {
 						this.plugin.settings.pathSettings.push({
-							type: 'folder',
+							type: "folder",
 							match: currentSelectedMappingFolder,
 							replace: currentSelectedMappingFolder,
 						});
@@ -333,17 +333,17 @@ class PathTitleSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Other Path or Folder Replacement')
+			.setName("Other Path or Folder Replacement")
 			.setDesc(
-				'Add a replacement for a different exact path or folder than one listed above'
+				"Add a replacement for a different exact path or folder than one listed above"
 			)
 			.addButton((button) => {
-				button.setButtonText('Add Other Path');
+				button.setButtonText("Add Other Path");
 				button.onClick(async () => {
 					this.plugin.settings.pathSettings.push({
-						type: 'exact',
-						match: '',
-						replace: '',
+						type: "exact",
+						match: "",
+						replace: "",
 					});
 					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
@@ -351,12 +351,12 @@ class PathTitleSettingTab extends PluginSettingTab {
 				});
 			})
 			.addButton((button) => {
-				button.setButtonText('Add Other Folder');
+				button.setButtonText("Add Other Folder");
 				button.onClick(async () => {
 					this.plugin.settings.pathSettings.push({
-						type: 'folder',
-						match: '',
-						replace: '',
+						type: "folder",
+						match: "",
+						replace: "",
 					});
 					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
@@ -365,17 +365,17 @@ class PathTitleSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Text or Regular Expression Replacement')
+			.setName("Text or Regular Expression Replacement")
 			.setDesc(
-				'Add a text or regular expression replacement to match and replace partial text or a regular expression'
+				"Add a text or regular expression replacement to match and replace partial text or a regular expression"
 			)
 			.addButton((button) => {
-				button.setButtonText('Add Text');
+				button.setButtonText("Add Text");
 				button.onClick(async () => {
 					this.plugin.settings.pathSettings.push({
-						type: 'text',
-						match: '',
-						replace: '',
+						type: "text",
+						match: "",
+						replace: "",
 					});
 					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
@@ -383,12 +383,12 @@ class PathTitleSettingTab extends PluginSettingTab {
 				});
 			})
 			.addButton((button) => {
-				button.setButtonText('Add Regular Expression');
+				button.setButtonText("Add Regular Expression");
 				button.onClick(async () => {
 					this.plugin.settings.pathSettings.push({
-						type: 'regexp',
-						match: '',
-						replace: '',
+						type: "regexp",
+						match: "",
+						replace: "",
 					});
 					this.undoReplacementEntry = null;
 					await this.plugin.saveSettings();
@@ -411,7 +411,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 				pathSettings === this.undoReplacementEntry[1]
 			) {
 				containerEl.createDiv(
-					{ cls: 'path-title-plugin-undo-container' },
+					{ cls: "path-title-plugin-undo-container" },
 					(el) => {
 						const heading = replacementTypeToUi[
 							pathSettings.type
@@ -419,7 +419,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 						new Setting(el)
 							.setDesc(`Replacement where ${heading} removed`)
 							.addButton((button) => {
-								button.setButtonText('Undo');
+								button.setButtonText("Undo");
 								button.onClick(async () => {
 									this.plugin.settings.pathSettings.splice(
 										index,
@@ -432,7 +432,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 								});
 							})
 							.addExtraButton((button) => {
-								button.setIcon('cross');
+								button.setIcon("cross");
 								button.onClick(() => {
 									this.undoReplacementEntry = null;
 									this.display();
@@ -449,8 +449,8 @@ class PathTitleSettingTab extends PluginSettingTab {
 			let replacementSetting: Setting = null;
 			function setSettingUi(settings: PathSettings) {
 				const emptyMessage = !settings.match
-					? ' (will not match any path)'
-					: '';
+					? " (will not match any path)"
+					: "";
 				headingEl.setText(
 					`${index + 1}. ${replacementTypeToUi[settings.type].heading(
 						settings.match
@@ -471,25 +471,25 @@ class PathTitleSettingTab extends PluginSettingTab {
 					);
 				}
 			}
-			containerEl.createEl('h3', {}, (el) => {
+			containerEl.createEl("h3", {}, (el) => {
 				headingEl = el;
 				setSettingUi(this.plugin.settings.pathSettings[index]);
 			});
 
 			new Setting(containerEl)
-				.setName('Replacement Type')
+				.setName("Replacement Type")
 				.addDropdown((dropdown) => {
 					dropdown
 						.addOptions({
-							exact: 'Exact Path',
-							folder: 'Exact Folder in Path',
-							text: 'Exact Text in Path',
-							regexp: 'Regular Expression in Path',
+							exact: "Exact Path",
+							folder: "Exact Folder in Path",
+							text: "Exact Text in Path",
+							regexp: "Regular Expression in Path",
 						})
 						.setValue(
 							this.plugin.settings.pathSettings[index].type ===
-								'fuzzy'
-								? 'regexp'
+								"fuzzy"
+								? "regexp"
 								: this.plugin.settings.pathSettings[index].type
 						)
 						.onChange((value) => {
@@ -503,7 +503,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 				});
 
 			matchSetting = new Setting(containerEl).addText((text) => {
-				text.setValue(pathSettings.match || '').onChange(
+				text.setValue(pathSettings.match || "").onChange(
 					async (value) => {
 						this.plugin.settings.pathSettings[index].match = value;
 						await this.plugin.saveSettings();
@@ -513,7 +513,7 @@ class PathTitleSettingTab extends PluginSettingTab {
 			});
 
 			replacementSetting = new Setting(containerEl).addText((text) => {
-				text.setValue(pathSettings.replace || '').onChange(
+				text.setValue(pathSettings.replace || "").onChange(
 					async (value) => {
 						this.plugin.settings.pathSettings[index].replace =
 							value;
@@ -527,8 +527,8 @@ class PathTitleSettingTab extends PluginSettingTab {
 			new Setting(containerEl)
 				.addExtraButton((button) => {
 					button
-						.setIcon('trash')
-						.setTooltip('Remove replacement')
+						.setIcon("trash")
+						.setTooltip("Remove replacement")
 						.onClick(async () => {
 							this.plugin.settings.pathSettings.splice(index, 1);
 							await this.plugin.saveSettings();
@@ -538,12 +538,12 @@ class PathTitleSettingTab extends PluginSettingTab {
 				})
 				.addExtraButton((button) => {
 					button
-						.setIcon('down-arrow-with-tail')
+						.setIcon("down-arrow-with-tail")
 						.setTooltip(
 							index >=
 								this.plugin.settings.pathSettings.length - 1
-								? 'Already last'
-								: 'Move replacement down'
+								? "Already last"
+								: "Move replacement down"
 						)
 						.setDisabled(
 							index >=
@@ -564,11 +564,11 @@ class PathTitleSettingTab extends PluginSettingTab {
 				})
 				.addExtraButton((button) => {
 					button
-						.setIcon('up-arrow-with-tail')
+						.setIcon("up-arrow-with-tail")
 						.setTooltip(
 							index === 0
-								? 'Already first'
-								: 'Move replacement up'
+								? "Already first"
+								: "Move replacement up"
 						)
 						.setDisabled(index === 0)
 						.onClick(async () => {
