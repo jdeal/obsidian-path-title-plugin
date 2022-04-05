@@ -152,7 +152,7 @@ export class PathTitlePlugin extends Plugin {
 
 	onunload() {
 		this.app.workspace.iterateAllLeaves((leaf) => {
-			if (leaf.view instanceof FileView) {
+			if (leaf.view instanceof FileView && leaf.view.file) {
 				this.cleanupLeaf(leaf);
 			}
 		});
