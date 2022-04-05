@@ -7,6 +7,7 @@ import {
 	Vault,
 	TFolder,
 	debounce,
+	WorkspaceLeaf,
 } from "obsidian";
 
 import { PathTitlePluginSettings, PathSettings } from "./types";
@@ -61,7 +62,7 @@ export class PathTitlePlugin extends Plugin {
 	// Find all file panes and show paths
 	setPaneTitles() {
 		this.app.workspace.iterateAllLeaves((leaf) => {
-			if (leaf.view instanceof FileView) {
+			if (leaf.view instanceof FileView && leaf.view.file) {
 				const fileView = leaf.view as FileView;
 				const path = fileView.file.parent
 					? fileView.file.parent.path
@@ -129,34 +130,30 @@ export class PathTitlePlugin extends Plugin {
 						this.settings.fontSize || defaultSettings.fontSize
 					);
 				} else {
-					const pathContainerEl = leaf.view.containerEl.find(
-						".path-title-plugin-path-title-container"
-					);
-					if (pathContainerEl) {
-						pathContainerEl.detach();
-					}
-
-					leaf.view.containerEl.removeClass(
-						"path-title-plugin-has-path"
-					);
-					leaf.view.containerEl.style.removeProperty(
-						"--path-title-plugin-font-size"
-					);
+					this.cleanupLeaf(leaf);
 				}
 			}
 		});
 	}
 
+	cleanupLeaf(leaf: WorkspaceLeaf) {
+		const pathContainerEl = leaf.view.containerEl.find(
+			".path-title-plugin-path-title-container"
+		);
+		if (pathContainerEl) {
+			pathContainerEl.detach();
+		}
+
+		leaf.view.containerEl.removeClass("path-title-plugin-has-path");
+		leaf.view.containerEl.style.removeProperty(
+			"--path-title-plugin-font-size"
+		);
+	}
+
 	onunload() {
 		this.app.workspace.iterateAllLeaves((leaf) => {
 			if (leaf.view instanceof FileView) {
-				leaf.view.containerEl.removeClass("path-title-plugin-has-path");
-				leaf.view.containerEl.style.removeProperty(
-					"--path-title-plugin-font-size"
-				);
-				leaf.view.containerEl
-					.find(".path-title-plugin-path-title-container")
-					.detach();
+				this.cleanupLeaf(leaf);
 			}
 		});
 	}
