@@ -48,8 +48,6 @@ export class PathTitlePlugin extends Plugin {
 			})
 		);
 
-		this.setPaneTitles();
-
 		// The rename event can sometimes be called many times consecutively
 		// (when renaming a folder with lots of subfolders)
 		const onRename = debounce(() => {
@@ -57,6 +55,10 @@ export class PathTitlePlugin extends Plugin {
 		}, 100);
 
 		this.registerEvent(this.app.vault.on("rename", onRename));
+
+		this.app.workspace.onLayoutReady(() => {
+			this.setPaneTitles();
+		});
 	}
 
 	// Find all file panes and show paths
@@ -76,6 +78,17 @@ export class PathTitlePlugin extends Plugin {
 					leaf.view.containerEl.addClass(
 						"path-title-plugin-has-path"
 					);
+					const headerTitleContainerEl = leaf.view.containerEl.find(
+						".view-header-title-container"
+					);
+					const isVerticalTitle =
+						getComputedStyle(headerTitleContainerEl).writingMode ===
+						"vertical-lr";
+					if (isVerticalTitle) {
+						leaf.view.containerEl.addClass(
+							"path-title-plugin-has-vertical-title"
+						);
+					}
 
 					if (
 						!leaf.view.containerEl.find(
@@ -88,10 +101,7 @@ export class PathTitlePlugin extends Plugin {
 						pathContainerEl.addClass(
 							"path-title-plugin-path-title-container"
 						);
-						const headerTitleContainerEl =
-							leaf.view.containerEl.find(
-								".view-header-title-container"
-							);
+
 						const titleEl =
 							headerTitleContainerEl.find(".view-header-title");
 
@@ -145,6 +155,9 @@ export class PathTitlePlugin extends Plugin {
 		}
 
 		leaf.view.containerEl.removeClass("path-title-plugin-has-path");
+		leaf.view.containerEl.removeClass(
+			"path-title-plugin-has-vertical-title"
+		);
 		leaf.view.containerEl.style.removeProperty(
 			"--path-title-plugin-font-size"
 		);

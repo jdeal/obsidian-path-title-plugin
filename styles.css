@@ -24,10 +24,23 @@
 	margin-right: 5px;
 }
 
+.path-title-plugin-has-vertical-title .path-title-plugin-path-title-container {
+	max-width: none;
+	max-height: 50%;
+	border-right: 0px solid var(--background-modifier-border);
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
 .path-title-plugin-has-path .path-title-plugin-path-title {
 	opacity: 75%;
 	overflow-x: scroll;
 	padding-right: 5px;
+}
+
+.path-title-plugin-has-vertical-title .path-title-plugin-path-title {
+	overflow-y: scroll;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .path-title-plugin-has-path .path-title-plugin-path-title::-webkit-scrollbar {
